@@ -1,6 +1,8 @@
 # kintoneAppManagementApp
 
-# Detail
+
+
+# Details:
    # Goal:
        * To create an app with customizations that track all the apps and its detail information, along with some analysis.  
 
@@ -53,6 +55,8 @@
    # Remarks:
        * User must have admin rights.
        * All the space must be given access to the administrator
+
+
 
 # Result
    # Target Audience: 
