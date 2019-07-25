@@ -8,6 +8,8 @@
 // with other parts that I can do.
 //*/
 
+//import datetime;
+
 (function(){
     'use strict';
     // return object of the space
@@ -77,6 +79,15 @@ function updateRecord(){
     });
 }
 
+// takes a full ISO 8601 string and returns in a form of yyyy-mm-dd
+function toShortISO(string){
+    let result = "";
+    for(let i = 0; i < 10; i++){
+        result += string[i];
+    }
+    return result;
+}
+
 // all the values in the record are placeholders for now
 function addOrUpdateRecords(addOrUpdate, recordId = null, app){
     var recordId = null;
@@ -89,11 +100,11 @@ function addOrUpdateRecords(addOrUpdate, recordId = null, app){
         'record': {
             'appName': {'value': app.name},
             'appId': {'value': app.appId},
-            'dateCreated': {'value': '2015-03-25'},
-           'dateModified':{'value': '2015-03-25'},
+            'dateCreated': {'value': toShortISO(app.createdAt)},
+           'dateModified':{'value': toShortISO(app.modifiedAt)},
            'spaceId': {'value': 100},
            'spaceName': {'value': 'space name'},
-           'threadId': {'value': 100},
+           'threadId': {'value': app.threadId},
            'totalNumRecord': {'value': 100},
            'mostRecentlyUpdatedRecord': {'value': 'https://www.google.com/'},
            'mostRecentlyAddedRecord': {'value': 'https://www.google.com/'},
@@ -155,8 +166,9 @@ full path to a data: resp.attachedApps[i].property
             let totalNumApps = myApps.length;
             // get data from each app and add records into this app
             console.log('myApps[0]: ', myApps[0]);
-            console.log('myApps[0].name: ', myApps[0].name);
-            console.log('myApps[0].appId: ', myApps[0].appId);
+            
+            console.log('myApps[0].createdAt: ', myApps[0].createdAt);
+            console.log('toShortISO: ', toShortISO(myApps[0].createdAt));
             addOrUpdateRecords('update', null, myApps[0]);
 
             console.log(event);
@@ -166,7 +178,7 @@ full path to a data: resp.attachedApps[i].property
             console.log(error);
         });
 
-        console.log("haha");
+        console.log("success");
     });
 })();
 
