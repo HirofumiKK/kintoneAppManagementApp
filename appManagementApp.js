@@ -1,4 +1,16 @@
-// return object of the space
+/* my plan:
+// if there is no record,  add new records
+// else, update the existing record
+// I'll think about this case latar:
+// even if there is a record, if a new app is added, we need to add it,
+// so we need to do both for that case
+// since I cannot figure out promise for now, I'm going to proceed
+// with other parts that I can do.
+//*/
+
+(function(){
+    'use strict';
+    // return object of the space
 function getSpace(spaceId){
     var body = {"id": spaceId};
     kintone.api(kintone.api.url('/k/v1/space', true), 'GET', body, function(resp) {
@@ -48,10 +60,10 @@ function updateRecord(){
         "id": id,
         "record": {
             "Text": {
-                "value": "it works!"
+                "value": "testing"
             },
             'age': {
-                'value': 777
+                'value': 100
             }
         }
     };
@@ -66,18 +78,18 @@ function updateRecord(){
 }
 
 // all the values in the record are placeholders for now
-function addOrUpdateRecords(addOrUpdate){
+function addOrUpdateRecords(addOrUpdate, recordId = null, app){
     var recordId = null;
     if(addOrUpdate === 'update'){
-        recordId = 54; // placeholder
+        recordId = 21; // placeholder
     }
     var body = {
         'app': kintone.app.getId(),
         'id': recordId,
         'record': {
-            'appName': {'value': 'yee'},
-            'appId': {'value': 100},
-           'dateCreated': {'value': '2015-03-25'},
+            'appName': {'value': app.name},
+            'appId': {'value': app.appId},
+            'dateCreated': {'value': '2015-03-25'},
            'dateModified':{'value': '2015-03-25'},
            'spaceId': {'value': 100},
            'spaceName': {'value': 'space name'},
@@ -86,7 +98,7 @@ function addOrUpdateRecords(addOrUpdate){
            'mostRecentlyUpdatedRecord': {'value': 'https://www.google.com/'},
            'mostRecentlyAddedRecord': {'value': 'https://www.google.com/'},
            'dateOfMostRecentUpdate': {'value': '2015-03-25'},
-           'dateOfMostRecentAdd': {'value': 2015-03-25},
+           'dateOfMostRecentAdd': {'value': '2015-03-25'},
            // status depends on conditions determined later
            //'status': {'value': ''},
            'averageLogIns': {'value': 100},
@@ -114,15 +126,7 @@ async function f(){
     return Promise.resolve(1);
 }
 
-/* my plan:
-// if there is no record,  add new records
-// else, update the existing record
-// I'll think about this case latar:
-// even if there is a record, if a new app is added, we need to add it,
-// so we need to do both for that case
-//*/
-
-function foo(){return 1;}
+function foo(){alert('not good man');}
 
 async function getSpaceForReal(spaceId = 12){
     var promiseSpace = new Promise((resolve, reject) => {
@@ -133,30 +137,36 @@ async function getSpaceForReal(spaceId = 12){
     console.log(mySpace);
 }
 
-(function(){
-    'use strict';
+/*
+process of fetching data and putting into records:
+full path to a data: resp.attachedApps[i].property
+
+*/
+
     kintone.events.on("app.record.index.show", function(event){
-        /*
-        var myApp = getApp(174);
-        var myRecord = getRecord(176, 12);
-        console.log(event.records[1]);
-        console.log(event);
-        //*/
-        //var myApp = getApp(176);
-        //addOrUpdateRecords('add');
-        //var mySpace = getSpace(12);
-        /*
-        let mySpace = getSpace(12);
-        let promiseSpace = new Promise(function(resolve, reject){
-            resolve(mySpace);
-        });         
-        promiseSpace.then(
-            result => console.log(mySpace),
-            error => console.log(error)
-        );
-        */
-       getSpaceForReal(12);
-       console.log("test");
+        // var mySpace = getSpace(12);
+        let spaceId = 12;
+        var body = {"id": spaceId};
+        kintone.api(kintone.api.url('/k/v1/space', true), 'GET', body, function(resp) {
+            // success
+            console.log(resp);
+            let myApps = resp.attachedApps;
+            console.log(myApps);
+            let totalNumApps = myApps.length;
+            // get data from each app and add records into this app
+            console.log('myApps[0]: ', myApps[0]);
+            console.log('myApps[0].name: ', myApps[0].name);
+            console.log('myApps[0].appId: ', myApps[0].appId);
+            addOrUpdateRecords('update', null, myApps[0]);
+
+            console.log(event);
+
+        }, function(error) {
+            // error
+            console.log(error);
+        });
+
+        console.log("haha");
     });
 })();
 
