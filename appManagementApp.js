@@ -1,26 +1,10 @@
-/*
-kintone.api(kintone.api.url('/k/v1/record', true) + '?app=20&id=100', 'GET', {}, function(resp) {
-    // success
-    console.log(resp)
-}, function(error) {
-    // error
-    console.log(error);
-});
-*/
-//const kintone = require('@kintone/kintone-js-sdk')
-
 // return object of the space
 function getSpace(spaceId){
     var body = {"id": spaceId};
-    
-    return kintone.api(kintone.api.url('/k/v1/space', true), 'GET', body, function(resp) {
+    kintone.api(kintone.api.url('/k/v1/space', true), 'GET', body, function(resp) {
         // success
         console.log(resp);
-        var obj = Object.assign({}, resp);
-        console.log(obj);
-        var obj2 = resp;
-        console.log(obj2);
-        return obj2;
+        return resp;
     }, function(error) {
         // error
         console.log(error);
@@ -52,15 +36,6 @@ function getRecord(appId, recordId){
     });
 }
 
-function getApiList(){
-    kintone.api(kintone.api.url('/k/v1/apis', true), 'GET', {}, function(resp) {
-        // success
-        console.log(resp);
-    }, function(error) {
-        // error
-        console.log(error);
-    });
-}
 
 function updateRecord(){
     var boo = 2;
@@ -90,10 +65,11 @@ function updateRecord(){
     });
 }
 
+// all the values in the record are placeholders for now
 function addOrUpdateRecords(addOrUpdate){
     var recordId = null;
     if(addOrUpdate === 'update'){
-        recordId = 47; // placeholder
+        recordId = 54; // placeholder
     }
     var body = {
         'app': kintone.app.getId(),
@@ -111,7 +87,8 @@ function addOrUpdateRecords(addOrUpdate){
            'mostRecentlyAddedRecord': {'value': 'https://www.google.com/'},
            'dateOfMostRecentUpdate': {'value': '2015-03-25'},
            'dateOfMostRecentAdd': {'value': 2015-03-25},
-           //'status': {'value': },
+           // status depends on conditions determined later
+           //'status': {'value': ''},
            'averageLogIns': {'value': 100},
            'averageNumRecordCreated': {'value': 100},
            'averageNumRecordUpdated': {'value': 100},
@@ -133,26 +110,53 @@ function addOrUpdateRecords(addOrUpdate){
     });
 }
 
+async function f(){
+    return Promise.resolve(1);
+}
+
 /* my plan:
 // if there is no record,  add new records
 // else, update the existing record
 // I'll think about this case latar:
 // even if there is a record, if a new app is added, we need to add it,
 // so we need to do both for that case
-*/
+//*/
+
+function foo(){return 1;}
+
+async function getSpaceForReal(spaceId = 12){
+    var promiseSpace = new Promise((resolve, reject) => {
+        resolve(getSpace(spaceId)),
+        reject('error')
+    });
+    var mySpace = await promiseSpace;
+    console.log(mySpace);
+}
+
 (function(){
     'use strict';
     kintone.events.on("app.record.index.show", function(event){
         /*
         var myApp = getApp(174);
         var myRecord = getRecord(176, 12);
-        var myApi = getApiList();
         console.log(event.records[1]);
         console.log(event);
         //*/
         //var myApp = getApp(176);
-        addOrUpdateRecords('add');
+        //addOrUpdateRecords('add');
         //var mySpace = getSpace(12);
-        console.log("got it");
+        /*
+        let mySpace = getSpace(12);
+        let promiseSpace = new Promise(function(resolve, reject){
+            resolve(mySpace);
+        });         
+        promiseSpace.then(
+            result => console.log(mySpace),
+            error => console.log(error)
+        );
+        */
+       getSpaceForReal(12);
+       console.log("test");
     });
 })();
+
