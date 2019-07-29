@@ -37,7 +37,7 @@ var existingRecords = getExistingAppRecords()
                 console.log(error);
             });
         }
-        
+
         
         async function getSpaceHelper(spaceId = 12){
             var promiseSpace = new Promise((resolve, reject) => {
@@ -48,7 +48,6 @@ var existingRecords = getExistingAppRecords()
             console.log(mySpace);
         }
         
-        
         function getApp(appId){
             var body = {
                 "id": appId
@@ -57,13 +56,13 @@ var existingRecords = getExistingAppRecords()
                 // success
                 console.log(resp);
                 console.log(resp.name);
-                console.log(resp.spaceId);
                 return resp;
             }, function(error) {
                 // error
                 console.log(error);
             });
         }
+        
         
         function getAppHelper(appId){
             return (new Promise(function(resolve){
@@ -76,7 +75,34 @@ var existingRecords = getExistingAppRecords()
                 console.log(error);
             });
         }
+
+
+        // checking if I can retrieve data this way
+        function getApp2(appId){
+            return kintone.api('/k/v1/records', 'GET', {app: appId}).then(function(resp) {
+                console.log("app resp from first return : ", resp);
+            }).then(function(){
+                console.log("app resp from then: ", resp);
+            }).catch(function(error){
+                var errmsg = 'There was an error when retrieving the data';      
+                //If an error is included in the response message, show it
+                if (error.message !== undefined){
+                   errmsg += '\n' + error.message;
+                }
+                alert(errmsg);
+            });
+        }
+
+
+        // helper function for getApp2
+        function getApp2Helpter(appId){
+            let promise = getApp2(appId);
+            promise.then(function(result){
+                console.log(result)
+            })
+        }
         
+
         function getRecord(appId, recordId){
             kintone.api(kintone.api.url('/k/v1/record', true) + '?app=' + appId + '&id=' + recordId, 'GET', {}, function(resp) {
                 // success
@@ -181,29 +207,26 @@ var existingRecords = getExistingAppRecords()
         
         // var mySpace = getSpace(12);
         let spaceId = 12;
+        let appId = 117;
         var body = {"id": spaceId};
         kintone.api(kintone.api.url('/k/v1/space', true), 'GET', body, function(resp) {
             // success
-            console.log(resp);
+            //console.log(resp);
             let myApps = resp.attachedApps;
             // get data from each app and add records into this app
-            console.log('myApps[0]: ', myApps[0]);
-            console.log(getSpace(12));
-            console.log(event);
+            //console.log('myApps[0]: ', myApps[0]);
+            //console.log(getSpace(12));
+            //console.log(event);
+            //let anApp = getApp2(appId);
+            //console.log(anApp);
+            //let appObject = getApp2Helpter(appId);
+            //console.log(appObject);
 
         }, function(error) {
             // error
             console.log(error);
         });
-        let promise = new Promise(resolve => {
-            resolve(getApp(117));
-        });
-        promise.then(
-            result => console.log(result),
-            error => alert(error)
-        );
 
-        console.log(getSpaceHelper());
-        console.log("test");
+        console.log("success");
     });
 })();
