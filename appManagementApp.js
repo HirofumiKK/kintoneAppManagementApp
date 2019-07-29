@@ -85,35 +85,7 @@ var existingRecords = getExistingAppRecords()
         });
     }
     
-    
-    function updateRecord(){
-        var boo = 2;
-        var id = null;
-        if(boo === 1){
-            id = 43;
-        }
-        var body = {
-            "app": kintone.app.getId(),
-            "id": id,
-            "record": {
-                "Text": {
-                    "value": "testing"
-                },
-                'age': {
-                    'value': 100
-                }
-            }
-        };
-          
-        kintone.api(kintone.api.url('/k/v1/record', true), 'POST', body, function(resp) {
-           // success
-            console.log(resp);
-        }, function(error) {
-             // error
-            console.log(error);
-        });
-    }
-    
+        
     // takes a full ISO 8601 string and returns in a form of yyyy-mm-dd
     function toShortISO(string){
         let result = "";
@@ -168,10 +140,6 @@ var existingRecords = getExistingAppRecords()
         });
     }
     
-    async function f(){
-        return Promise.resolve(1);
-    }
-    
     
     function samplePromise(){
         kintone.events.on('app.record.index.show', function(event) {
@@ -207,34 +175,6 @@ var existingRecords = getExistingAppRecords()
         from each space, get all apps,
         from each app, get all data,
         add the required data from the apps as records
-    List of required information and where/how they can be acquired:
-        * Fetches app information within the platform
-            * App Name: space -> app
-            * App ID (Unique): space -> app
-            * Date of creation: space -> app 
-            * Date of modified: space -> app
-            * Created By: space -> app
-            * Modified By: space -> app
-            * Space ID: space
-            * Space Name: space
-            * Thread ID: space -> app
-        * Fetches records information from each app:
-            * Total numbers of records in each app: kintone.app.getQueryCondition
-            * Most recent updated record: traverse through the update date
-            * Most recent added record: the 0th index of the record array
-            * Date of the most recent update: traverse through the update date 
-            * Date of the most recent added: the 0th index of the record array
-        * Status: Active / In-active / Delete
-            * Active: Date of most recent updated record falls within one year
-            * In-active: Date of most recent updated record went above one year
-            * Delete: Record is no longer found in the API
-        * Analysis:
-            * App Level:
-                * How many average log-ins for each app per week
-                * Average on numbers of the record being created in a week: record -> dateCreated
-                * Average on numbers of the record being updated in a week: record -> dateUpdated
-                * How many comments are generated in each app: get comment function
-                * # of Total Imports / Exports
     */
         
         // var mySpace = getSpace(12);
@@ -247,7 +187,6 @@ var existingRecords = getExistingAppRecords()
             // get data from each app and add records into this app
             console.log('myApps[0]: ', myApps[0]);
             console.log(getSpace(12));
-            
             console.log(event);
 
         }, function(error) {
@@ -263,8 +202,6 @@ var existingRecords = getExistingAppRecords()
         );
 
         console.log(getSpaceHelper());
-
-
-        console.log("success");
+        console.log("test");
     });
 })();
