@@ -39,6 +39,40 @@ var existingRecords = getExistingAppRecords()
             });
         }
 
+
+        // sample request using promise from kintone rest api sample
+        async function samplePromise(){
+                return kintone.api('/k/v1/records', 'GET',  {app: 117}).then(async function(resp) {
+                    console.log(resp);
+                    return resp;
+                }).then(async function(){
+                    let result = await getSpace(12);
+                    console.log(result);
+                    return result;
+                }).catch(function(error) {
+                    var errmsg = 'There was an error when retrieving the data';      
+                    //If an error is included in the response message, show it
+                    if (error.message !== undefined){
+                        errmsg += '\n' + error.message;
+                    }
+                    alert(errmsg);
+                });
+        }
+
+
+        // merging getSpace and samplePromise
+        async function promiseSpace(spaceId){
+            return kintone.api(kintone.api.url('/k/v1/space', true), 'GET', {"id": spaceId}, function(resp){
+                console.log(resp);
+                return resp;
+            }).then(async function(){
+                console.log("then what?");
+            }).catch(function(error){
+                console.log(error);
+            })
+        }
+        
+
         // promise: state fulfilled, value undefined
         async function getSpaceHelper(spaceId = 12){
             var promiseSpace = new Promise((resolve, reject) => {
@@ -119,11 +153,11 @@ var existingRecords = getExistingAppRecords()
 
 
         // checking if I can retrieve data this way
-        function getApp2(appId){
-            return kintone.api('/k/v1/records', 'GET', {app: appId}).then(function(resp) {
+        async function getApp2(appId){
+            return await kintone.api('/k/v1/records', 'GET', {app: appId}).then(async function(resp) {
                 console.log("app resp from first return : ", resp);
-            }).then(function(){
-                console.log("app resp from then: ", resp);
+            }).then(async function(){
+                console.log("haha");
             }).catch(function(error){
                 var errmsg = 'There was an error when retrieving the data';      
                 //If an error is included in the response message, show it
@@ -136,10 +170,12 @@ var existingRecords = getExistingAppRecords()
 
 
         // helper function for getApp2
-        function getApp2Helpter(appId){
-            let promise = getApp2(appId);
-            promise.then(function(result){
+        async function getApp2Helpter(appId){
+            var promise = await new Promise(function(resolve){
+                resolve(getApp2(appId));
+            }).then(function(result){
                 console.log(result)
+                return result;
             })
         }
         
@@ -209,25 +245,7 @@ var existingRecords = getExistingAppRecords()
             });
         }
         
-        
-        function samplePromise(){
-            kintone.events.on('app.record.index.show', function(event) {
-                return kintone.api('/k/v1/records', 'GET',  {app: 20}).then(function(resp) {
-                    alert("First pop-up");
-                }).then(function(){
-                    alert("Second pop-up");//This should appear after the function before is resolved.
-                }).catch(function(error) {
-                    var errmsg = 'There was an error when retrieving the data';      
-                    //If an error is included in the response message, show it
-                    if (error.message !== undefined){
-                        errmsg += '\n' + error.message;
-                    }
-                    alert(errmsg);
-                });
-            });
-        }
-        
-        
+                
         /*
         process of fetching data and putting into records:
         full path to a data: resp.attachedApps[i].property
@@ -266,7 +284,7 @@ var existingRecords = getExistingAppRecords()
             // error
             console.log(error);
         });
-        let mySpace = stackOverflowGetSpaceHelper(12);
+        let mySpace = getApp2Helpter(117);
         Promise.all([
             mySpace
         ]).then(resp => {
