@@ -1,3 +1,4 @@
+
 /* my plan:
 // if there is no record,  add new records
 // else, update the existing record
@@ -38,7 +39,7 @@ var existingRecords = getExistingAppRecords()
             });
         }
 
-        
+        // promise: state fulfilled, value undefined
         async function getSpaceHelper(spaceId = 12){
             var promiseSpace = new Promise((resolve, reject) => {
                 resolve(getSpace(spaceId)),
@@ -47,6 +48,44 @@ var existingRecords = getExistingAppRecords()
             var mySpace = await promiseSpace;
             console.log(mySpace);
         }
+
+        // testing a new method for getSpace
+        function getSpaceHelper1(spaceId){
+            var promiseSpace = new Promise(function (resolve){
+                getSpace(12);
+            });
+            promiseSpace.then(function(value){
+                resolve(getSpace(12));
+                console.log(value);
+            });
+        }
+
+        // troubleshooting getSpaceHelper
+        function getSpaceHelper2(spaceId){
+            return new Promise(function(resolve){
+                resolve(getSpace(spaceId))
+            }).then(function(response) {
+                console.log("Success! ", response);
+                console.log(response);
+            }, function(error){
+                console.error("Failed! ", error);
+            });
+        }
+
+        function stackOverflowGetSpace(spaceId){
+            return new Promise(function(resolve){
+                getSpace(spaceId)
+            })
+        }
+
+        function stackOverflowGetSpaceHelper(spaceId){
+            var foo = stackOverflowGetSpace(spaceId).then(function(response) {
+                console.log("Success! ", response);
+                console.log(foo);
+            })
+            console.log(foo);
+        }
+
         
         function getApp(appId){
             var body = {
@@ -221,12 +260,23 @@ var existingRecords = getExistingAppRecords()
             //console.log(anApp);
             //let appObject = getApp2Helpter(appId);
             //console.log(appObject);
-
         }, function(error) {
             // error
             console.log(error);
         });
+        let mySpace = stackOverflowGetSpaceHelper(12);
+        Promise.all([
+            mySpace
+        ]).then(resp => {
+            console.log(mySpace);
+        })
 
+        // things to try:
+        // changing the function inside the getSpaceHelpter2 at 64
+        // try the solution from the stack overflow
+
+        console.log(mySpace);
+        
         console.log("success");
     });
 })();
