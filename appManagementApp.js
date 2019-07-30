@@ -50,36 +50,38 @@ var existingRecords = getExistingAppRecords()
         }
 
         // testing a new method for getSpace
-        function getSpaceHelper1(spaceId){
-            var promiseSpace = new Promise(function (resolve){
+        async function getSpaceHelper1(spaceId){
+            var promiseSpace = new Promise(async function (resolve){
                 getSpace(12);
             });
-            promiseSpace.then(function(value){
-                resolve(getSpace(12));
+            await promiseSpace.then(async function(value){
+                await resolve(getSpace(12));
                 console.log(value);
             });
         }
 
         // troubleshooting getSpaceHelper
-        function getSpaceHelper2(spaceId){
-            return new Promise(function(resolve){
-                resolve(getSpace(spaceId))
-            }).then(function(response) {
+        async function getSpaceHelper2(spaceId){
+            return new Promise(async function(resolve){
+                await resolve(getSpace(spaceId))
+            }).then(async function(response) {
                 console.log("Success! ", response);
-                console.log(response);
+                let result = await getSpace(spaceId);
+                console.log(result);
+                return result;                
             }, function(error){
                 console.error("Failed! ", error);
             });
         }
 
-        function stackOverflowGetSpace(spaceId){
-            return new Promise(function(resolve){
-                getSpace(spaceId)
+        async function stackOverflowGetSpace(spaceId){
+            return new Promise(async function(resolve){
+                await getSpace(spaceId)
             })
         }
 
-        function stackOverflowGetSpaceHelper(spaceId){
-            var foo = stackOverflowGetSpace(spaceId).then(function(response) {
+        async function stackOverflowGetSpaceHelper(spaceId){
+            var foo = await stackOverflowGetSpace(spaceId).then(function(response) {
                 console.log("Success! ", response);
                 console.log(foo);
             })
@@ -270,13 +272,10 @@ var existingRecords = getExistingAppRecords()
         ]).then(resp => {
             console.log(mySpace);
         })
-
         // things to try:
         // changing the function inside the getSpaceHelpter2 at 64
         // try the solution from the stack overflow
-
-        console.log(mySpace);
-        
-        console.log("success");
+        console.log(mySpace); 
+        console.log("end");
     });
 })();
